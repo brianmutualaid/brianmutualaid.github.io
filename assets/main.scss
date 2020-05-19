@@ -13,12 +13,14 @@ a:hover {
 a:visited {
   color: #4A2DB3;
 }
-div.highlight {
+.highlight {
   background-color: #000000 !important;
+  background: #000000 !important;
   color: #FFFFFF !important;
 }
-div.language-plaintext {
+.highlighter-rouge .highlight {
   background-color: #000000 !important;
+  background: #000000 !important;
   color: #FFFFFF !important;
 }
 pre, code {
