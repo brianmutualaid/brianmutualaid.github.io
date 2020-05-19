@@ -1,7 +1,9 @@
 ---
 ---
 
-@import "";
+@import
+  "minima/skins/{{ site.minima.skin | default: 'classic' }}",
+  "minima/initialize";
 a {
   text-decoration: none;
   color: #8564FF;
