@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 title: "Routing some local hosts over a WireGuard VPN on an OpenBSD router"
 ---
 
