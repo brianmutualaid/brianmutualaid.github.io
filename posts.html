@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>mutualaid.info</title>
+<title>mutualaid.info - posts</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
@@ -29,17 +29,17 @@ a:hover {
 <body>
 <div id="header">
 <p>
-<b>mutualaid.info</b>
+<b>posts</b>
 </p>
 </div>
 <div id="content">
 <p>
-<a href="https://libcom.org/library/dispossessed-ursula-le-guin" alt="the dispossessed">the dispossessed</a><br />
-<a href="https://godischange.org/the-book-of-the-living/" alt="earthseed">earthseed</a><br />
-<a href="http://www.gutenberg.org/cache/epub/4341/pg4341-images.html" alt="mutual aid">mutual aid</a>
+{% for post in site.posts %}
+<a href="{{ post.url }}">{{ post.title }}</a><br />
+{% endfor %}
 </p>
 <p>
-<a href="posts.html">posts</a>
+<a href="/">index</a>
 </p>
 </div>
 </div>
