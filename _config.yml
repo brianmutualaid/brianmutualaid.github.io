@@ -1,2 +1,3 @@
 theme: minima
-site.title: mutualaid.info
+site:
+  title: mutualaid.info
