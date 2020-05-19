@@ -14,9 +14,9 @@ a:visited {
   color: #4A2DB3;
 }
 pre {
-  font-family: 'Source Code Pro', 'Menlo', 'Consolas', monospace;
-}
-code {
   background-color: #000000;
   color: #FFFFFF;
+}
+pre, code {
+  font-family: 'Source Code Pro', 'Menlo', 'Consolas', monospace;
 }
