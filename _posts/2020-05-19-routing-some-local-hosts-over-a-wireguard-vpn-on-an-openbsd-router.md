@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Routing some local hosts over a WireGuard VPN on an OpenBSD router"
+date: 2020-05-19 16:56:00 -0400
 ---
 
 # Overview
