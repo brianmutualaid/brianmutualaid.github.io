@@ -13,16 +13,15 @@ a:hover {
 a:visited {
   color: #4A2DB3;
 }
-.highlight {
-  background-color: #000000 !important;
-  background: #000000 !important;
-  color: #FFFFFF !important;
+div.highlight, pre.highlight {
+ background-color:#000000 !important;
+ border: 0px;
 }
-.highlighter-rouge .highlight {
-  background-color: #000000 !important;
-  background: #000000 !important;
-  color: #FFFFFF !important;
+pre > code {
+ background:#000000;
+ color:#FFFFFF;
 }
-pre, code {
-  font-family: 'Source Code Pro', 'Menlo', 'Consolas', monospace;
+pre,
+code {
+ font-family:'Source Code Pro', 'Menlo', 'Consolas', monospace
 }
