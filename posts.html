@@ -5,7 +5,7 @@ permalink: /posts/
 ---
 <p>
 {% for post in site.posts %}
-<b>{{ post.date }}</b><br />
+<b>{{ post.date | date: "%Y-%m-%d" }}</b><br />
 <a href="{{ post.url }}">{{ post.title }}</a><br />
 {% endfor %}
 </p>
