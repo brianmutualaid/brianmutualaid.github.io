@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: "Routing some local hosts over a WireGuard VPN on an OpenBSD router"
 ---
 
