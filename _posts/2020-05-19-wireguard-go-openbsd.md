@@ -19,7 +19,7 @@ I was inspired to write this by a friend who wanted to be able to automatically 
 
 You need a WireGuard configuration file from your VPN provider. For example, [Mullvad has a page to generate a config file here](https://mullvad.net/en/download/wireguard-config/). [There is an interesting post here about why Mullvad supports WireGuard](https://mullvad.net/en/blog/2017/9/27/wireguard-future/).
 
-You also need an OpenBSD router/firewall with PF running. It shouldn't matter if the OpenBSD system is directly connected to the internet or not. These steps were tested successfully on version 6.6 of OpenBSD, and they should work on 6.7 as well.
+You also need root access to an OpenBSD router/firewall with PF running. It shouldn't matter if the OpenBSD system is directly connected to the internet or not. These steps were tested successfully on version 6.6 of OpenBSD, and they should work on 6.7 as well. All commands should be run as root (or with `doas`).
 
 # Install WireGuard
 
