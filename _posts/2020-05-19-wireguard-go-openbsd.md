@@ -76,7 +76,7 @@ wg setconf tun2 /etc/wireguard/client.conf
 
 This will configure routes in an alternate routing table that can be used for the traffic we want to be routed over the VPN. I initially also put the `tun2` interface in an alternate rdomain, which worked fine, but I don't think it's strictly required here and we can get away with just a dedicated routing table (we'll use PF later to select the routing table for specific incoming traffic).
 
-We'll use an ID of `2` for the routing table but you can use any value up to `255` (the default routing table is ID `0`). Remember to replace `10.32.4.3` here with the actual address you configured in the `hostname.tun2` file!
+We'll use an ID of 2 for the routing table but you can use any value up to 255 (the default routing table is ID 0). Remember to replace `10.32.4.3` here with the actual address you configured in the `hostname.tun2` file!
 
 ```
 route -T 2 -n add -inet default -iface 10.32.4.3
@@ -103,7 +103,7 @@ Save your changes and reload your ruleset to apply the changes.
 pfctl -f /etc/pf.conf
 ```
 
-Your local device(s) should have all traffic routed over the WireGuard VPN now!
+Your local device(s) should have all traffic routed over the WireGuard VPN now! [You can check for DNS leaks and confirm your external IP address by using dnsleaktest.com](https://dnsleaktest.com/) and [confirm you're connected to Mullvad by using am.i.mullvad.net](https://am.i.mullvad.net/). You can also check the output of the `wg show` command to see current VPN peers and traffic statistics.
 
 # DNS
 
