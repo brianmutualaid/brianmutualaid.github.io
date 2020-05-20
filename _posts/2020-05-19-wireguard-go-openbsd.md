@@ -3,7 +3,7 @@ layout: post
 title: "Routing some local hosts over a WireGuard VPN on an OpenBSD router"
 ---
 
-> WireGuard kernel support on OpenBSD is coming (hopefully) soon! It's not in the `-current` branch or snapshots quite yet. [The repository where it's being worked on is here](https://git.zx2c4.com/wireguard-openbsd/) and patches have been submitted by the developers to the `tech@` mailing list. Once kernel support is in the `-current` branch of OpenBSD, I'll try to publish an updated guide using the kernel support instead of `wireguard-go`.
+> WireGuard kernel support on OpenBSD is coming (hopefully) soon! It's not in the `-current` branch or snapshots quite yet. [The repository where it's being worked on is here](https://git.zx2c4.com/wireguard-openbsd/) and patches have been submitted by the developers to the `tech@` mailing list. Once kernel support is in the `-current` branch of OpenBSD, I'll try to publish an updated post using the kernel support instead of `wireguard-go`.
 
 I was inspired to write this by a friend who wanted to be able to automatically tunnel traffic from specific devices on their local network over a WireGuard VPN. A few other resources were helpful in getting up to speed on WireGuard and OpenBSD routing:
 
