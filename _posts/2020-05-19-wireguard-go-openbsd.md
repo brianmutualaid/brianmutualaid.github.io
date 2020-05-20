@@ -103,7 +103,7 @@ Save your changes and reload your ruleset to apply the changes.
 pfctl -f /etc/pf.conf
 ```
 
-Your local device(s) should have all traffic routed over the WireGuard VPN now! [You can check for DNS leaks and confirm your external IP address by using dnsleaktest.com](https://dnsleaktest.com/) and [confirm you're connected to Mullvad by using am.i.mullvad.net](https://am.i.mullvad.net/). You can also check the output of the `wg show` command to see current VPN peers and traffic statistics.
+Your local device(s) should have all traffic routed over the WireGuard VPN now! [You can check for DNS leaks and confirm your external IP address by using dnsleaktest.com](https://dnsleaktest.com/) or [confirm you're connected to Mullvad by using am.i.mullvad.net](https://am.i.mullvad.net/). You can also check the output of the `wg show` command to see current VPN peers and traffic statistics.
 
 # DNS
 
