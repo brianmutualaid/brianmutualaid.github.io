@@ -17,7 +17,7 @@ I was inspired to write this by a friend who wanted to be able to automatically 
 
 You need a WireGuard configuration file from your VPN provider. For example, [Mullvad has a page to generate a config file here](https://mullvad.net/en/download/wireguard-config/). [There is an interesting post here about why Mullvad supports WireGuard](https://mullvad.net/en/blog/2017/9/27/wireguard-future/).
 
-You also need root access to an OpenBSD router with PF running. It shouldn't matter if the OpenBSD system is directly connected to the internet or not. These steps were tested successfully on version 6.6 of OpenBSD, and they should work on 6.7 as well. All commands should be run as root (or with `doas`).
+You also need root access to an OpenBSD router with PF running. It shouldn't matter if the OpenBSD router is directly connected to the internet or not. These steps were tested successfully on version 6.6 of OpenBSD, and they should work on 6.7 as well. All commands should be run as root (or with `doas`).
 
 # Install WireGuard
 
@@ -82,7 +82,7 @@ We'll use an ID of `2` for the routing table but you can use any value up to `25
 route -T 2 -n add -inet default -iface 10.32.4.3
 ```
 
-One more route is needed to ensure that traffic to the WireGuard VPN peer is not routed over the VPN. Replace `185.65.134.128` with the IP address from the `Endpoint` line in `/etc/wireguard/client.conf` (make sure to remove the `:51820` port specification) and replace `172.15.1.1` with your internet connection's default gateway. If your OpenBSD system is connected directly to the internet, this is the `gateway` value in the output of the `route -T 0 -n get default` command.
+One more route is needed to ensure that traffic to the WireGuard VPN peer is not routed over the VPN. Replace `185.65.134.128` with the IP address from the `Endpoint` line in `/etc/wireguard/client.conf` (make sure to remove the `:51820` port specification) and replace `172.15.1.1` with your internet connection's default gateway. If your OpenBSD router is connected directly to the internet, this is the `gateway` value in the output of the `route -T 0 -n get default` command.
 
 ```
 route -T 2 -n add 185.65.134.128 -gateway 172.15.1.1
@@ -107,7 +107,7 @@ Your local device(s) should have all traffic routed over the WireGuard VPN now!
 
 # DNS
 
-**Nothing in these instructions covers DNS configuration to prevent DNS leaks!** [Mullvad does hijack all DNS requests and routes them to a Mullvad DNS server](https://mullvad.net/en/help/terms-service/). For good measure (or if you're not using Mullvad or another provider that does this automatically), you can manually set the DNS server on your local device, or configure your DHCP server to hand out the desired DNS server addresses to your local device or local subnet. For example, if your OpenBSD system is your DHCP server and you want to configure Mullvad's DNS server for the entire 10.0.1.0/24 subnet, include the following in `/etc/dhcpd.conf`.
+**Nothing in these instructions covers DNS configuration to prevent DNS leaks!** [Mullvad does hijack all DNS requests and routes them to a Mullvad DNS server](https://mullvad.net/en/help/terms-service/). For good measure (or if you're not using Mullvad or another provider that does this automatically), you can manually set the DNS server on your local device, or configure your DHCP server to hand out the desired DNS server addresses to your local device or local subnet. For example, if your OpenBSD router is also your DHCP server and you want to configure Mullvad's DNS server for the entire 10.0.1.0/24 subnet, include the following in `/etc/dhcpd.conf`.
 
 ```
 subnet 10.0.1.0 netmask 255.255.255.0 {
