@@ -38,7 +38,7 @@ rcctl enable wireguard_go
 
 # Set up the config file
 
-This will put your WireGuard config file into `/etc/wireguard` and recursively set permissions on it so its only accesible by the root user. This assumes the config file is named `mullvad-se12.conf` and is in your current working directory (you can copy any valid config file to `/etc/wireguard/client.conf`).
+This will put your WireGuard config file into `/etc/wireguard` and recursively set permissions on it so its only accessible by the root user. This assumes the config file is named `mullvad-se12.conf` and is in your current working directory (you can copy any valid config file to `/etc/wireguard/client.conf`).
 
 ```
 mkdir /etc/wireguard
