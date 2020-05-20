@@ -158,4 +158,4 @@ rcctl restart wireguard_go
 
 # Thanks!
 
-Thanks for reading. This was a fun exercise in learning about WireGuard and OpenBSD routing for me and I hope it's helpful for someone else. [If you have any issues or questions feel free to contact me](/contact)Stay tuned for an updated post using the OpenBSD kernel support when it's available.
+Thanks for reading. This was a fun exercise in learning about WireGuard and OpenBSD routing for me and I hope it's helpful for someone else. [If you have any issues or questions feel free to contact me](/contact). Stay tuned for an updated post using the OpenBSD kernel support when it's available.
