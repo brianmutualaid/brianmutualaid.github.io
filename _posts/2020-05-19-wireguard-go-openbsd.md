@@ -3,9 +3,11 @@ layout: post
 title: "Routing some local hosts over a WireGuard VPN on an OpenBSD router"
 ---
 
+> WireGuard kernel support on OpenBSD is coming (hopefully) soon! It's not in the `-current` branch or snapshots quite yet. [The repository where it's being worked on is here](https://git.zx2c4.com/wireguard-openbsd/). Once kernel support is in the `-current` branch of OpenBSD, I'll try to publish an updated guide using the kernel support instead of `wireguard-go`.
+
 # Overview
 
-I was inspired to write this by a friend who wanted to be able to automatically tunnel traffic from specific devices on their local network over a WireGuard VPN. A few other resources were helpful in writing this:
+I was inspired to write this by a friend who wanted to be able to automatically tunnel traffic from specific devices on their local network over a WireGuard VPN. A few other resources were helpful in getting up to speed on WireGuard and OpenBSD routing:
 
 * [toying with wireguard on openbsd](https://flak.tedunangst.com/post/toying-with-wireguard-on-openbsd)
 * [WireGuard on OpenBSD](https://blog.jasper.la/wireguard-on-openbsd.html)
@@ -17,7 +19,7 @@ I was inspired to write this by a friend who wanted to be able to automatically 
 
 You need a WireGuard configuration file from your VPN provider. For example, [Mullvad has a page to generate a config file here](https://mullvad.net/en/download/wireguard-config/). [There is an interesting post here about why Mullvad supports WireGuard](https://mullvad.net/en/blog/2017/9/27/wireguard-future/).
 
-You also need an OpenBSD router/firewall with PF running. It shouldn't matter if the OpenBSD system is directly connected to the internet or not. These steps were tested successfully on version 6.6 of OpenBSD.
+You also need an OpenBSD router/firewall with PF running. It shouldn't matter if the OpenBSD system is directly connected to the internet or not. These steps were tested successfully on version 6.6 of OpenBSD, and they should work on 6.7 as well.
 
 # Install WireGuard
 
@@ -27,43 +29,35 @@ This will install WireGuard from packages. [`wireguard-go` is a userland impleme
 pkg_add wireguard-go wireguard-tools
 ```
 
-# Set up WireGuard to run as a non-root user
+# Configure the service
 
-From what I can tell, [WireGuard merged a patch to support running as a non-root user](https://lists.zx2c4.com/pipermail/wireguard/2019-July/004308.html), as long as you set the MTU on the `tun` interface instead of relying on the WireGuard daemon to do it. The default install from OpenBSD packages does not set this up for us, so we'll set it up ourselves.
-
-```
-useradd -s /sbin/nologin -c "WireGuard" -d /var/empty _wireguard
-```
-
-Now you can set the `tun` interface you want WireGuard to use (we'll use `tun2` just because; you can use any unused `tun` device number you want, but the rest of the steps here will assume you're using `tun2`), set the user it will run as, and enable it.
+Now you can set the `tun` interface you want WireGuard to use (we'll use `tun2` just because it's available; you can use any unused `tun` device number you want, but the rest of the steps here will assume you're using `tun2`) and enable it so it will start on boot.
 
 ```
 rcctl set wireguard_go flags tun2
-rcctl set wireguard_go user _wireguard
 rcctl enable wireguard_go
 ```
 
 # Set up the config file
 
-This will put your WireGuard config file into `/etc/wireguard` and recursively set permissions that allow the new user you created to access it. This assumes the config file is named `mullvad-se12.conf` and is in your current working directory (you can copy it from wherever you downloaded it to).
+This will put your WireGuard config file into `/etc/wireguard` and recursively set permissions that allow the new user you created to access it. This assumes the config file is named `mullvad-se12.conf` and is in your current working directory (you can copy any config file from wherever you downloaded it to).
 
 ```
 mkdir /etc/wireguard
 cp mullvad-se12.conf /etc/wireguard/client.conf
-chown -R _wireguard:_wireguard /etc/wireguard
+chown -R root:wheel /etc/wireguard
 chmod -R 600 /etc/wireguard
 ```
 
-For the config file to work with `wg` (instead of `wg-quick`, which doesn't allow for the level of customization we're doing here) **you have to delete both the `Address` and `DNS` lines from the `Interface` section**. Copy these values somewhere else for now since you'll need them later.
+For the config file to work with `wg` (instead of `wg-quick`, which doesn't allow for the level of customization we're doing here) **you have to delete both the `Address` and `DNS` lines from the `Interface` section**. Copy these lines somewhere else for now since you'll need the values later.
 
 # Set up the network interface
 
-Create the file `/etc/hostname.tun2` with the following contents. Replace `10.32.4.3` with the IPv4 address and `c00:bbbb:bbbb:bb01::1:7c21 128` with the IPv6 address, both from the `Address` line that you previously deleted from `/etc/wireguard/client.conf` (note that the `/32` in the IPv4 address is replaced with the equivalent in dot-decimal notation and the IPv6 address is separated from its prefix with a space instead of a forward slash).
+Create the file `/etc/hostname.tun2` with the following contents. Replace `10.32.4.3` with the IPv4 address from the `Address` line that you previously deleted from `/etc/wireguard/client.conf` (note that the `/32` in the IPv4 address is replaced with the equivalent in dot-decimal notation).
 
 ```
 description "WireGuard"
 inet 10.32.4.3 255.255.255.255
-inet6 fc00:bbbb:bbbb:bb01::1:7c21 128
 mtu 1420
 up
 ```
@@ -74,59 +68,94 @@ Bring up the interface.
 sh /etc/netstart tun2
 ```
 
-# Configure a routing table
-
-This will configure routes in an alternate routing table that can be used for the traffic we want to be routed over the VPN. I initially also put the `tun2` interface in an alternate `rdomain`, which worked fine, but I don't think it's strictly required here and we can get away with just a dedicated routing table (we'll use PF later to select the routing table for specific incoming traffic).
-
-We'll use an ID of `2` for the routing table but you can use any value up to `255` (the default routing table is ID `0`). Remember to replace `10.32.4.3` and `fc00:bbbb:bbbb:bb01::1:7c21` here with the actual addresses you configured in the `hostname.tun2` file!
-
-```
-route -T 2 -n add -inet default -iface 10.32.4.3
-route -T 2 -n add -inet6 default -iface fc00:bbbb:bbbb:bb01::1:7c21
-```
-
-One more route is needed to ensure that traffic to the WireGuard VPN peer/server is not routed over the VPN. Replace `185.65.134.128` with the IP address from the `Endpoint` line in `/etc/wireguard/client.conf` (make sure to remove the `:51820` port specification) and replace `172.15.1.1` with your internet connection's default gateway. If your OpenBSD system is connected directly to the internet, this is the `gateway` value in the output of the `route -T 0 -n get default` command.
-
-```
-route -T 2 -n add 185.65.134.128 -gateway 172.15.1.1
-```
-
-# Start WireGuard
-
-...gotta fix non-root.
-
-# Apply the client configuration to the interface
+Apply your Wireguard configuration to the interface.
 
 ```
 wg setconf tun2 /etc/wireguard/client.conf
 ```
 
+# Configure a routing table
+
+This will configure routes in an alternate routing table that can be used for the traffic we want to be routed over the VPN. I initially also put the `tun2` interface in an alternate `rdomain`, which worked fine, but I don't think it's strictly required here and we can get away with just a dedicated routing table (we'll use PF later to select the routing table for specific incoming traffic).
+
+We'll use an ID of `2` for the routing table but you can use any value up to `255` (the default routing table is ID `0`). Remember to replace `10.32.4.3` here with the actual address you configured in the `hostname.tun2` file!
+
+```
+route -T 2 -n add -inet default -iface 10.32.4.3
+```
+
+One more route is needed to ensure that traffic to the WireGuard VPN peer is not routed over the VPN. Replace `185.65.134.128` with the IP address from the `Endpoint` line in `/etc/wireguard/client.conf` (make sure to remove the `:51820` port specification) and replace `172.15.1.1` with your internet connection's default gateway. If your OpenBSD system is connected directly to the internet, this is the `gateway` value in the output of the `route -T 0 -n get default` command.
+
+```
+route -T 2 -n add 185.65.134.128 -gateway 172.15.1.1
+```
+
 # Configure PF
 
-* Add these lines to your `pf.conf` file **before** your other `nat-to` rule (assuming you have an existing `nat-to` rule for all egress traffic)
-* Replace the IP address `10.0.0.100` with the private IP address of the local device you want to be routed over the VPN (you could also specify a range here)
-* Replace `em1` with whatever interface your local device's traffic will be entering on
-* Note that these will not match IPv6 traffic (maybe I'll fix that later)
+Add the following rules to your `pf.conf` file. The first rule will match any incoming traffic from the local device with IP address `10.0.0.100` and assign it to the alternate routing table you created. The second rule will then match outgoing traffic on the `tun2` interface and NAT it to the IP address of the interface. Replace `em1` with the name of the interface that is connected to your local network. You can also specify a range of IP addresses here, or adjust the rule to match all incoming traffic on an interface (e.g., a VLAN interface).
 
 ```
 match in on em1 inet from 10.0.0.100 to any rtable 2
 match out on tun2 inet from !(tun2:network) to any nat-to (tun2:0)
 ```
 
-* Reload pf configuration to apply changes
+Save your changes and reload your ruleset to apply the changes.
 
 ```
 pfctl -f /etc/pf.conf
 ```
 
-* Your local device with IP address `10.0.0.100` should have all of its traffic routed over the WireGuard VPN now!
-* Read the DNS section to deal with DNS leaks
+Your local device(s) should have all traffic routed over the WireGuard VPN now!
 
 # DNS
 
-* **Nothing in these instructions covers setting the DNS server on the local device! Without updating your local device's DNS settings it could still be sending DNS queries to your ISP, some other third party, or whatever your default DNS server is.**
-* Set the local device's DNS server manually (set the local device's DNS server to the IP address from the `DNS` line that you noted before) or you could specify a custom DNS server in a DHCP reservation for the local device
+**Nothing in these instructions covers DNS configuration to prevent DNS leaks!** [Mullvad does hijack all DNS requests and routes them to a Mullvad DNS server](https://mullvad.net/en/help/terms-service/). For good measure (or if you're not using Mullvad or another provider that does this automatically), you can manually set the DNS server on your local device, or configure your DHCP server to hand out the desired DNS server addresses to your local device or local subnet. For example, if your OpenBSD system is your DHCP server and you want to configure Mullvad's DNS server for the entire 10.0.1.0/24 subnet, include the following in `/etc/dhcpd.conf`.
 
-# Diagram (could be improved with IPv6 info)
+```
+subnet 10.0.1.0 netmask 255.255.255.0 {
+    option routers 10.0.1.1;
+    option domain-name-servers 193.138.218.74;
+    range 10.0.1.100 10.0.1.199;
+}
+```
 
-![wireguard_openbsd_router](https://user-images.githubusercontent.com/35312055/77459122-226add80-6df7-11ea-9899-b6863956636b.png)
+[The Mullvad DNS server address is available here](https://mullvad.net/en/help/dns-leaks/).
+
+[If you use Firefox you may also want to disable DNS over HTTPS (DoH)](https://support.mozilla.org/en-US/kb/dns-over-https-doh-faqs#w_will-users-be-able-to-disable-doh).
+
+# Running as a non-root user
+
+> This is optional!
+
+[WireGuard merged a patch in 2019 to support running as a non-root user](https://lists.zx2c4.com/pipermail/wireguard/2019-July/004308.html) if you set the MTU on the `tun` interface instead of relying on the WireGuard daemon to do it. Unfortunately even with this patch, you would still need to change the group ID (giving the group the daemon runs as `rw` permissions) on the `tun` device file in `/dev` for it to work. My knowledge of Go is extremely limited, but I think this is because the [`OpenFile` function](https://golang.org/pkg/os/#OpenFile) is called with `O_RDWR`, meaning it tries to open the file in read/write access mode. [You can see this on line 125 of `tun_openbsd.go`](https://git.zx2c4.com/wireguard-go/tree/tun/tun_openbsd.go?h=v0.0.20190908#n125) (this link points to the version of the file that corresponds with the version of the package available for OpenBSD 6.6, but the line is the same in more recent versions).
+
+If you still want to set up WireGuard to run as a non-root user, add a user for it to run as.
+
+```
+useradd -s /sbin/nologin -c "WireGuard" -d /var/empty _wireguard
+```
+
+Configure the daemon to run as the user you just created.
+
+```
+rcctl set wireguard_go user _wireguard
+```
+
+Set permissions on your configuration files and `/dev/tun2`.
+
+```
+chown -R _wireguard:_wireguard /etc/wireguard
+chmod -R 600 /etc/wireguard
+chown root:_wireguard /dev/tun2
+chmod 660 /dev/tun2
+```
+
+Restart the daemon.
+
+```
+rcctl restart wireguard_go
+```
+
+# Thanks!
+
+Thanks for reading. This was a fun exercise in learning about WireGuard for me and I hope it's helpful for someone else. Stay tuned for an updated post using the OpenBSD kernel support when it's available.
