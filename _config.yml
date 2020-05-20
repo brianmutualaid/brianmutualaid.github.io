@@ -4,3 +4,5 @@ permalink: /posts/:title
 header_pages:
   - posts.html
   - contact.html
+minima:
+  date_format: "%B %-d, %Y"
