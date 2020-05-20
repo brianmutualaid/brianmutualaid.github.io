@@ -2,6 +2,5 @@ theme: minima
 title: mutualaid.info
 permalink: /posts/:title
 header_pages:
-  - index.html
   - posts.html
   - contact.html
