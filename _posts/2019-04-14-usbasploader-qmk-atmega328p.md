@@ -1,3 +1,8 @@
+---
+layout: post
+title: Flashing USBaspLoader and QMK to an ATmega328P 
+---
+
 This is a super high level (and probably incomplete in some places) guide and list of resources related to using a Raspberry Pi's GPIO pins to flash USBaspLoader onto an ATmega328P microcontroller unit (MCU) and flashing QMK onto it over USB.
 
 # Software prerequisites
