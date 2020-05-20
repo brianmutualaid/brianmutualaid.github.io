@@ -14,15 +14,15 @@ a:visited {
   color: #4A2DB3;
 }
 div.highlight, pre.highlight {
- background-color: #000000 !important;
- border: 0px;
+  background-color: #000000 !important;
+  border: 0px;
 }
 pre > code {
- background: #000000;
- color: #FFFFFF;
+  background: #000000;
+  color: #FFFFFF;
 }
 pre, code {
- font-family:'Source Code Pro', 'Menlo', 'Consolas', monospace
+  font-family:'Source Code Pro', 'Menlo', 'Consolas', monospace
 }
 code {
   background-color: #FFFFFF;
@@ -30,13 +30,16 @@ code {
   padding: 0px;
 }
 .site-header {
- border-top:0px;
- border-bottom:0px;
+  border-top:0px;
+  border-bottom:0px;
 }
 .site-nav, .page-link {
- color: #4A2DB3 !important;
+  color: #4A2DB3 !important;
 }
 .site-footer {
- border-top:0px;
- padding:0px;
+  border-top:0px;
+  padding:0px;
+}
+blockquote {
+  font-style: normal;
 }
