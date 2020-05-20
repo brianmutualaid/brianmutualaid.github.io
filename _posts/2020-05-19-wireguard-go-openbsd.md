@@ -19,7 +19,7 @@ I was inspired to write this by a friend who wanted to be able to automatically 
 
 You need a WireGuard configuration file from your VPN provider. For example, [Mullvad has a page to generate a config file here](https://mullvad.net/en/download/wireguard-config/). [There is an interesting post here about why Mullvad supports WireGuard](https://mullvad.net/en/blog/2017/9/27/wireguard-future/).
 
-You also need root access to an OpenBSD router/firewall with PF running. It shouldn't matter if the OpenBSD system is directly connected to the internet or not. These steps were tested successfully on version 6.6 of OpenBSD, and they should work on 6.7 as well. All commands should be run as root (or with `doas`).
+You also need root access to an OpenBSD router with PF running. It shouldn't matter if the OpenBSD system is directly connected to the internet or not. These steps were tested successfully on version 6.6 of OpenBSD, and they should work on 6.7 as well. All commands should be run as root (or with `doas`).
 
 # Install WireGuard
 
@@ -31,7 +31,7 @@ pkg_add wireguard-go wireguard-tools
 
 # Configure the service
 
-Now you can set the `tun` interface you want WireGuard to use (we'll use `tun2` just because it's available; you can use any unused `tun` device number you want, but the rest of the steps here will assume you're using `tun2`) and enable it so it will start on boot.
+Set the `tun` interface you want WireGuard to use (we'll use `tun2` just because it's available; you can use any available `tun` device number you want, but the rest of the steps here will assume you're using `tun2`) and enable it so it will start on boot.
 
 ```
 rcctl set wireguard_go flags tun2
@@ -40,7 +40,7 @@ rcctl enable wireguard_go
 
 # Set up the config file
 
-This will put your WireGuard config file into `/etc/wireguard` and recursively set permissions that allow the new user you created to access it. This assumes the config file is named `mullvad-se12.conf` and is in your current working directory (you can copy any config file from wherever you downloaded it to).
+This will put your WireGuard config file into `/etc/wireguard` and recursively set permissions on it so its only accesible by the root user. This assumes the config file is named `mullvad-se12.conf` and is in your current working directory (you can copy any valid config file to `/etc/wireguard/client.conf`).
 
 ```
 mkdir /etc/wireguard
@@ -76,7 +76,7 @@ wg setconf tun2 /etc/wireguard/client.conf
 
 # Configure a routing table
 
-This will configure routes in an alternate routing table that can be used for the traffic we want to be routed over the VPN. I initially also put the `tun2` interface in an alternate `rdomain`, which worked fine, but I don't think it's strictly required here and we can get away with just a dedicated routing table (we'll use PF later to select the routing table for specific incoming traffic).
+This will configure routes in an alternate routing table that can be used for the traffic we want to be routed over the VPN. I initially also put the `tun2` interface in an alternate rdomain, which worked fine, but I don't think it's strictly required here and we can get away with just a dedicated routing table (we'll use PF later to select the routing table for specific incoming traffic).
 
 We'll use an ID of `2` for the routing table but you can use any value up to `255` (the default routing table is ID `0`). Remember to replace `10.32.4.3` here with the actual address you configured in the `hostname.tun2` file!
 
