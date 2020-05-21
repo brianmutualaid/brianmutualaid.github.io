@@ -3,6 +3,7 @@ title: mutualaid.info
 permalink: /posts/:title
 header_pages:
   - posts.html
+  - links.html
   - contact.html
 minima:
   date_format: "%B %-d, %Y"
