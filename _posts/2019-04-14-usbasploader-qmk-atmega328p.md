@@ -16,7 +16,7 @@ These two sites were very helpful in wiring up the ATmega328P to the GPIO pins o
 * [How to Program an AVR/Arduino using the Raspberry Pi GPIO](http://ozzmaker.com/program-avr-using-raspberry-pi-gpio/)
 * [Program an AVR or Arduino Using Raspberry Pi GPIO](https://learn.adafruit.com/program-an-avr-or-arduino-using-raspberry-pi-gpio-pins/configuration)
 
-The pin numbers in `avrdude.conf` are the GPIO numbers, *not* the physical pin numbers ([so with the pinout diagram here you use the gp* numbers in `avrdude.conf`, not the numbers on the pins themselves](https://www.jameco.com/Jameco/workshop/circuitnotes/raspberry-pi-circuit-note.html)).
+The pin numbers in `avrdude.conf` are the GPIO numbers, **not** the physical pin numbers ([so with the pinout diagram here you use the gp* numbers in `avrdude.conf`, not the numbers on the pins themselves](https://www.jameco.com/Jameco/workshop/circuitnotes/raspberry-pi-circuit-note.html)).
 
 Once everything is hooked up, make sure avrdude can see the MCU. This is assuming you named your custom programmer in `avrdude.conf` "pi".
 
@@ -66,13 +66,13 @@ To test that the bootloader is working, hold down the switch that's wired to the
 avrdude -c usbasp -p m328p -v
 ```
 
-If this doesn't work, something is probably wrong with your wiring, the fuses, or the bootloader didn't flash correctly.
+If this doesn't work, something is probably wrong with your wiring or the fuses, or the bootloader didn't flash correctly.
 
 # Flashing QMK
 
-I don't have in-depth instructions for this, but the [QMK hand-wiring guide](https://docs.qmk.fm/#/hand_wire) is helfpul. [All of the changes mentioned are in this commit](https://github.com/brianmutualaid/qmk_firmware/commit/f95689318fb97fdd4c6400d2c89bdd4ccfceae79).
+I don't have in-depth instructions for this, but the [QMK hand-wiring guide](https://docs.qmk.fm/#/hand_wire) is helpful. [All of the changes mentioned are in this commit](https://github.com/brianmutualaid/qmk_firmware/commit/f95689318fb97fdd4c6400d2c89bdd4ccfceae79).
 
-Clone the QMK repo from https://github.com/qmk/qmk_firmware. Define the matrix rows and columns. Comment out soft serial pin. Add your layout to handwired2x2.h. Edit `rules.mk`:
+[Clone the QMK repo here](https://github.com/qmk/qmk_firmware). Define the matrix rows and columns. Comment out soft serial pin. Add your layout to `handwired2x2.h`. Edit `rules.mk`:
 
 ```
 MCU = atmega328p
