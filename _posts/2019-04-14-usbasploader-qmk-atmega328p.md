@@ -66,7 +66,7 @@ To test that the bootloader is working, hold down the switch that's wired to the
 avrdude -c usbasp -p m328p -v
 ```
 
-If this doesn't work, something is probably wrong with your wiring, the fuses, or the bootloader didn't flash correctly.
+If this doesn't work, something is probably wrong with your wiring or the fuses, or the bootloader didn't flash correctly.
 
 # Flashing QMK
 
