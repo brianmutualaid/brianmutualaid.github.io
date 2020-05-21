@@ -16,7 +16,7 @@ These two sites were very helpful in wiring up the ATmega328P to the GPIO pins o
 * [How to Program an AVR/Arduino using the Raspberry Pi GPIO](http://ozzmaker.com/program-avr-using-raspberry-pi-gpio/)
 * [Program an AVR or Arduino Using Raspberry Pi GPIO](https://learn.adafruit.com/program-an-avr-or-arduino-using-raspberry-pi-gpio-pins/configuration)
 
-The pin numbers in `avrdude.conf` are the GPIO numbers, *not* the physical pin numbers ([so with the pinout diagram here you use the gp* numbers in `avrdude.conf`, not the numbers on the pins themselves](https://www.jameco.com/Jameco/workshop/circuitnotes/raspberry-pi-circuit-note.html)).
+The pin numbers in `avrdude.conf` are the GPIO numbers, **not** the physical pin numbers ([so with the pinout diagram here you use the gp* numbers in `avrdude.conf`, not the numbers on the pins themselves](https://www.jameco.com/Jameco/workshop/circuitnotes/raspberry-pi-circuit-note.html)).
 
 Once everything is hooked up, make sure avrdude can see the MCU. This is assuming you named your custom programmer in `avrdude.conf` "pi".
 
