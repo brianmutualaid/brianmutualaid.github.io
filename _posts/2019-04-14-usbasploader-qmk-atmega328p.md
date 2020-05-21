@@ -70,7 +70,7 @@ If this doesn't work, something is probably wrong with your wiring or the fuses,
 
 # Flashing QMK
 
-I don't have in-depth instructions for this, but the [QMK hand-wiring guide](https://docs.qmk.fm/#/hand_wire) is helfpul. [All of the changes mentioned are in this commit](https://github.com/brianmutualaid/qmk_firmware/commit/f95689318fb97fdd4c6400d2c89bdd4ccfceae79).
+I don't have in-depth instructions for this, but the [QMK hand-wiring guide](https://docs.qmk.fm/#/hand_wire) is helpful. [All of the changes mentioned are in this commit](https://github.com/brianmutualaid/qmk_firmware/commit/f95689318fb97fdd4c6400d2c89bdd4ccfceae79).
 
 Clone the QMK repo from https://github.com/qmk/qmk_firmware. Define the matrix rows and columns. Comment out soft serial pin. Add your layout to handwired2x2.h. Edit `rules.mk`:
 
