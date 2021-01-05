@@ -94,3 +94,31 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 # That's it!
 
 Thanks for reading.
+
+# Bonus
+
+Here's a kind of gross script I quickly wrote to convert a Mullvad configuration file into `hostname.if` format. The first argument should be the path to the Mullvad configuration file and the second argument should be the routing domain number you plan to use. If you save it as `mullvad.sh` and make it executable, you can run it with a command like `./mullvad.sh mlvd.conf 2`:
+
+```
+#!/bin/sh
+
+if [ -z "$1" -o -z "$2" ]; then
+    printf "First argument should be a Mullvad config file and second argument a routing domain number.\\n"
+    exit 1
+fi
+
+rdomain="$2"
+wgkey=$(cat "$1" | grep PrivateKey | awk '{print $3}')
+wgpeer=$(cat "$1" | grep PublicKey | awk '{print $3}')
+wgendpoint=$(cat "$1" | grep Endpoint | awk '{print $3}' | sed 's/:/ /')
+wgaip=$(cat "$1" | grep AllowedIPs | awk '{print $3}')
+inet=$(cat "$1" | grep Address | awk '{print $3}')
+
+printf \
+"description \"WireGuard\"\\n\
+rdomain ${rdomain}\\n\
+wgkey ${wgkey}\\n\
+wgpeer ${wgpeer} wgendpoint ${wgendpoint} wgaip ${wgaip}\\ninet ${inet}\\n\
+!route -T ${rdomain} -n add -inet default -iface $(echo "$inet" | cut -d '/' -f 1)\\n\
+!route -T ${rdomain} -n add $(echo "$wgendpoint" | cut -d ' ' -f 1) -gateway \$(route -T 0 -n get default | grep gateway | awk '{print \$2}')\\n"
+```
