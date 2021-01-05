@@ -118,7 +118,8 @@ printf \
 "description \"WireGuard\"\\n\
 rdomain ${rdomain}\\n\
 wgkey ${wgkey}\\n\
-wgpeer ${wgpeer} wgendpoint ${wgendpoint} wgaip ${wgaip}\\ninet ${inet}\\n\
+wgpeer ${wgpeer} wgendpoint ${wgendpoint} wgaip ${wgaip}\\n\
+inet ${inet}\\n\
 !route -T ${rdomain} -n add -inet default -iface $(echo "$inet" | cut -d '/' -f 1)\\n\
 !route -T ${rdomain} -n add $(echo "$wgendpoint" | cut -d ' ' -f 1) -gateway \$(route -T 0 -n get default | grep gateway | awk '{print \$2}')\\n"
 ```
