@@ -91,6 +91,6 @@ subnet 10.0.0.0 netmask 255.255.255.0 {
 
 [If you use Firefox you may also want to disable DNS over HTTPS (DoH)](https://support.mozilla.org/en-US/kb/dns-over-https-doh-faqs#w_will-users-be-able-to-disable-doh).
 
-# Thanks!
+# That's it!
 
-That's it! Thanks for reading.
+Thanks for reading.
