@@ -42,9 +42,19 @@ If you want to restrict what source IP addresses traffic from your peer is allow
 
 The `route -T 0 -n get default` command ensures that traffic to the WireGuard VPN peer is not routed over the VPN. The `grep` and `awk` commands extract your default route table's default gateway IP address and the full command adds a route to the WireGuard endpoint or peer IP via that default gateway.
 
+Save the file and then set the proper permissions and bring up the new interface:
+
+```
+chmod 640 /etc/hostname.wg2
+chown root:wheel /etc/hostname.wg2
+sh /etc/netstart wg2
+```
+
+You should now be able to see some information about the interface and statistics about VPN traffic by running `ifconfig wg2`.
+
 # Configure PF
 
-These PF rules will match any incoming traffic from a local device with IP address `10.0.0.100`, route that traffic using the routing table associated with the alternate rdomain you created, and NAT the traffic to the IP address of your `wg` interface. This assumes you already have a PF macro called `int_if` that defines the interface that the traffic from the local device will be entering on.
+These PF rules will match any incoming traffic from a local device with IP address `10.0.0.100`, route that traffic using the routing table associated with the alternate rdomain you created, and NAT the traffic to the IP address of your `wg` interface. This assumes you already have a PF macro called `int_if` that defines the interface that the traffic from the local device will be entering on. Add these lines to your `/etc/pf.conf` file:
 
 ```
 match in on $int_if inet from 10.0.0.100 to any rtable 2
@@ -57,7 +67,7 @@ You can also route all the traffic on an interface (a physical or VLAN interface
 match in on vlan200 from vlan200:network to any rtable 2
 ```
 
-Save your changes and reload your ruleset to apply the changes.
+Save your changes and reload the ruleset to apply them:
 
 ```
 pfctl -f /etc/pf.conf
