@@ -12,10 +12,6 @@ These man pages were helpful:
 * [`pf.conf(5)`](https://man.openbsd.org/OpenBSD-6.8/pf.conf)
 * [`rdomain(4)`](https://man.openbsd.org/OpenBSD-6.8/rdomain)
 
-# Draft
-
-Generate a private key and associate it with a new 
-
 # Prerequisites
 
 You'll need a WireGuard keypair (public and private keys) for your OpenBSD router and a WireGuard public key from your VPN provider. You can generate your own private key and upload the public key to your VPN provider, or let them generate everything for you (for example, [Mullvad has a page to generate a configuration file](https://mullvad.net/en/download/wireguard-config/) that generates everything for you and also gives you the ability to upload a key).
