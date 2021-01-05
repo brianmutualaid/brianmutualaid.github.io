@@ -97,7 +97,7 @@ Thanks for reading.
 
 # Bonus
 
-Here's a kind of gross script I quickly wrote to convert a Mullvad configuration file into `hostname.if` format. The first argument should be the path to the Mullvad configuration file and the second argument should be the routing domain number you plan to use. If you save it as `mullvad.sh` and make it executable, you can run it with a command like `./mullvad.sh mlvd.conf 2`:
+Here's a kind of gross script I quickly wrote to convert a Mullvad configuration file into `hostname.if` format. The first argument should be the path to the Mullvad configuration file and the second argument should be the routing domain number you plan to use.
 
 ```
 #!/bin/sh
@@ -122,4 +122,10 @@ wgpeer ${wgpeer} wgendpoint ${wgendpoint} wgaip ${wgaip}\\n\
 inet ${inet}\\n\
 !route -T ${rdomain} -n add -inet default -iface $(echo "$inet" | cut -d '/' -f 1)\\n\
 !route -T ${rdomain} -n add $(echo "$wgendpoint" | cut -d ' ' -f 1) -gateway \$(route -T 0 -n get default | grep gateway | awk '{print \$2}')\\n"
+```
+
+If you save it as `mullvad.sh` and make it executable, you can run it with a command like:
+
+```
+./mullvad.sh mlvd.conf 2 > /etc/hostname.wg2
 ```
