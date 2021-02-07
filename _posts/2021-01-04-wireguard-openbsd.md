@@ -3,7 +3,7 @@ layout: post
 title: "Using OpenBSD's in-kernel WireGuard support to route some local hosts over a VPN"
 ---
 
-This post is a follow-up to [Routing some local hosts over a WireGuard VPN on an OpenBSD router](/posts/wireguard-go-openbsd), which detailed how to use the [userland implementation of WireGaurd, `wireguard-go`](https://git.zx2c4.com/wireguard-go/about/) on OpenBSD to route a specific local host or subnet over a WireGuard VPN. I've finally upgraded to OpenBSD 6.8, so this post will cover how to use the new in-kernel WireGuard support from the `wg(4)` driver to accomplish the same goal.
+This post is a follow-up to [Routing some local hosts over a WireGuard VPN on an OpenBSD router](/posts/wireguard-go-openbsd), which detailed how to use the [userland implementation of WireGaurd, `wireguard-go`](https://git.zx2c4.com/wireguard-go/about/), on OpenBSD to route a specific local host or subnet over a WireGuard VPN. I've finally upgraded to OpenBSD 6.8, so this post will cover how to use the new in-kernel WireGuard support from the `wg(4)` driver to accomplish the same goal.
 
 These man pages were helpful:
 
